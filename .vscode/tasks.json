@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev",
+			"path": "app/client",
+			"problemMatcher": [],
+			"label": "npm: dev - app/client",
+			"detail": "vite --host"
+		},
+		{
+			"type": "npm",
+			"script": "dev",
+			"path": "app/server",
+			"problemMatcher": [],
+			"label": "npm: dev - app/server",
+			"detail": "nodemon index.js"
+		}
+	]
+}
