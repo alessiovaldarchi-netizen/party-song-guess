@@ -54,7 +54,7 @@ export default function Lobby({
                             {t('landing.genresLabel')}
                         </p>
                         <div className="flex flex-wrap gap-2">
-                            {['pop', 'rock', 'hiphop', 'rap', 'trap', 'dance', 'jazz'].map((g) => (
+                            {['pop', 'rock', 'hiphop', 'rap', 'trap', 'dance', 'jazz', 'metal', 'indie', 'electronic', 'rnb'].map((g) => (
                                 <button
                                     key={g}
                                     type="button"
