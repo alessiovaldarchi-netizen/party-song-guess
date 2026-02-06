@@ -7,8 +7,25 @@ export default function GameRoom({ socket, room, players }) {
     const [roundResult, setRoundResult] = useState(null); // { winner: 'Name', song: {...} }
     const audioRef = useRef(new Audio());
 
+    const [countdown, setCountdown] = useState(null);
+
     useEffect(() => {
+        socket.on('start_countdown', ({ duration }) => {
+            setStatus('Get Ready...'); // Or specific status
+            setCountdown(duration);
+            let count = duration;
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    setCountdown(count);
+                } else {
+                    clearInterval(timer);
+                }
+            }, 1000);
+        });
+
         socket.on('new_round', ({ roundNumber, previewUrl }) => {
+            setCountdown(null);
             setCurrentRound(roundNumber);
             setStatus('PLAYING');
             setRoundResult(null);
@@ -34,6 +51,7 @@ export default function GameRoom({ socket, room, players }) {
 
         // Clean up listeners
         return () => {
+            socket.off('start_countdown');
             socket.off('new_round');
             socket.off('round_winner');
             socket.off('round_timeout');
@@ -112,6 +130,14 @@ export default function GameRoom({ socket, room, players }) {
                     ))}
                 </div>
             </div>
+
+            {countdown !== null && (
+                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+                    <div className="text-9xl font-bold text-white animate-ping">
+                        {countdown}
+                    </div>
+                </div>
+            )}
 
         </div>
     );

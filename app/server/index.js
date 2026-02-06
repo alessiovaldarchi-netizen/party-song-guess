@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
                 const songs = await musicService.getRandomSongs(genre || 'pop', room.totalRounds);
                 room.songs = songs;
                 io.to(roomId).emit('game_started', { totalRounds: room.totalRounds });
-                startRound(roomId);
+                setTimeout(() => startRound(roomId), 500);
             } catch (e) {
                 console.error(e);
             }
@@ -105,26 +105,32 @@ function startRound(roomId) {
         return;
     }
 
-    const song = room.songs[room.currentRound];
-    room.currentSong = song;
-    room.roundActive = true;
-    room.currentRound++;
+    // Emit countdown signal
+    io.to(roomId).emit('start_countdown', { duration: 3 });
 
-    io.to(roomId).emit('new_round', {
-        roundNumber: room.currentRound,
-        previewUrl: song.previewUrl
-    });
-
-    // Timeout if no one guesses in 30s
     setTimeout(() => {
-        if (room.roundActive && room.currentSong === song) {
-            room.roundActive = false;
-            io.to(roomId).emit('round_timeout', { song: song });
-            setTimeout(() => {
-                startRound(roomId);
-            }, 5000);
-        }
-    }, 30000);
+        const song = room.songs[room.currentRound];
+        room.currentSong = song;
+        room.roundActive = true;
+        room.currentRound++;
+
+        io.to(roomId).emit('new_round', {
+            roundNumber: room.currentRound,
+            previewUrl: song.previewUrl
+        });
+
+        // Timeout if no one guesses in 30s
+        setTimeout(() => {
+            if (room.roundActive && room.currentSong === song) {
+                room.roundActive = false;
+                io.to(roomId).emit('round_timeout', { song: song });
+                setTimeout(() => {
+                    startRound(roomId);
+                }, 5000);
+            }
+        }, 30000);
+    }, 3000);
+
 }
 
 function endGame(roomId) {
