@@ -10,6 +10,7 @@ function App() {
   const [room, setRoom] = useState(null);
   const [players, setPlayers] = useState([]);
   const [playerName, setPlayerName] = useState('');
+  const [totalRounds, setTotalRounds] = useState(10);
 
   useEffect(() => {
     socket.on('room_created', (roomData) => {
@@ -58,7 +59,7 @@ function App() {
 
   const createRoom = () => {
     if (!playerName) return alert('Inserisci il tuo nome');
-    socket.emit('create_room', { playerName });
+    socket.emit('create_room', { playerName, totalRounds });
   };
 
   const joinRoom = (roomId) => {
@@ -88,6 +89,21 @@ function App() {
             value={playerName}
             onChange={e => setPlayerName(e.target.value)}
           />
+          <div className="text-left">
+            <label className="block text-sm text-gray-400 mb-1">
+              Numero di round
+            </label>
+            <select
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-purple-500"
+              value={totalRounds}
+              onChange={e => setTotalRounds(parseInt(e.target.value, 10))}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+            </select>
+          </div>
           <div className="flex gap-4">
             <button
               onClick={createRoom}

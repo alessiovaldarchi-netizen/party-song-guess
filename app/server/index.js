@@ -23,14 +23,25 @@ const rooms = {};
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
-    socket.on('create_room', ({ playerName }) => {
+    socket.on('create_room', ({ playerName, totalRounds }) => {
         const roomId = Math.random().toString(36).substring(2, 7).toUpperCase();
+
+        // Validate / normalize number of rounds (default 10)
+        let rounds = parseInt(totalRounds, 10);
+        if (isNaN(rounds) || rounds <= 0) {
+            rounds = 10;
+        }
+        // Put a reasonable upper limit
+        if (rounds > 50) {
+            rounds = 50;
+        }
+
         rooms[roomId] = {
             id: roomId,
             players: [{ id: socket.id, name: playerName, score: 0 }],
             state: 'LOBBY', // LOBBY, PLAYING, ENDED
             currentRound: 0,
-            totalRounds: 10,
+            totalRounds: rounds,
             currentSong: null,
             scores: {}
         };

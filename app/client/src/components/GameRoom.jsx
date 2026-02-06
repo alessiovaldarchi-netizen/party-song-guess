@@ -80,7 +80,7 @@ export default function GameRoom({ socket, room, players }) {
 
             <div className="w-full flex justify-between items-center mb-6 px-4">
                 <div className="bg-gray-800 px-4 py-2 rounded-full font-mono">
-                    Round {currentRound} / 10
+                    Round {currentRound} / {room?.totalRounds || 10}
                 </div>
                 <div className="text-xl font-bold animate-pulse text-purple-400">
                     {status === 'PLAYING' ? '🎵 GUESS THE SONG 🎵' : status}
