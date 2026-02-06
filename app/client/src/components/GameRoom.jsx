@@ -41,6 +41,7 @@ export default function GameRoom({ socket, room, players }) {
         });
 
         socket.on('round_winner', ({ player, song }) => {
+            // Show quick winner message but immediately move to next song (handled server-side)
             setStatus('ROUND_OVER');
             setRoundResult({ winner: player, song });
             audioRef.current.pause();
